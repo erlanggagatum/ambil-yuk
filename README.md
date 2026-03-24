@@ -1,6 +1,6 @@
 # Ambil Yuk
 
-Aplikasi web sederhana untuk admin memposting barang bekas, dan teman-teman bisa antre untuk mengambilnya.
+A simple web app for an admin to post second-hand items, and friends can queue up to claim them.
 
 ## Tech Stack
 
@@ -24,7 +24,7 @@ Aplikasi web sederhana untuk admin memposting barang bekas, dan teman-teman bisa
 
 ---
 
-## Deploy ke VPS (Fresh Server)
+## Deploy to VPS (Fresh Server)
 
 ### 1. Install Docker
 
@@ -33,38 +33,38 @@ curl -fsSL https://get.docker.com | sh
 sudo usermod -aG docker $USER && newgrp docker
 ```
 
-### 2. Clone repository
+### 2. Clone the repository
 
 ```bash
 git clone <repo-url> /srv/ambilyuk
 cd /srv/ambilyuk
 ```
 
-### 3. Siapkan file environment
+### 3. Set up environment file
 
 ```bash
 cp .env.example .env
 nano .env
 ```
 
-Sesuaikan nilai berikut:
+Update the following values:
 
 ```env
-APP_URL=http://<IP-atau-domain-VPS>
-DB_PASSWORD=ganti_dengan_password_kuat
+APP_URL=http://<VPS-IP-or-domain>
+DB_PASSWORD=replace_with_strong_password
 ```
 
-> `DB_PASSWORD` dipakai oleh Laravel dan MySQL container — pastikan nilainya sama.
+> `DB_PASSWORD` is used by both Laravel and the MySQL container — make sure the value is the same.
 
-### 4. Build dan jalankan container
+### 4. Build and start containers
 
 ```bash
 docker compose up -d --build
 ```
 
-Proses build pertama membutuhkan beberapa menit.
+The first build will take a few minutes.
 
-### 5. Inisialisasi aplikasi
+### 5. Initialize the application
 
 ```bash
 docker compose exec app php artisan key:generate --force
@@ -72,72 +72,72 @@ docker compose exec app php artisan migrate --seed --force
 docker compose exec app php artisan storage:link
 ```
 
-Ini membuat semua tabel dan akun admin awal (`admin` / `password`). Ganti password setelah login pertama.
+This creates all tables and the initial admin account (`admin` / `password`). Change the password after first login.
 
-### 6. Akses aplikasi
+### 6. Access the app
 
-Buka browser ke `http://<IP-VPS>` — selesai.
+Open your browser at `http://<VPS-IP>` — done.
 
 ---
 
 ## Update / Redeploy
 
-Setelah melakukan perubahan kode:
+After making code changes:
 
 ```bash
 git pull
 docker compose up -d --build
-docker compose exec app php artisan migrate --force   # jika ada migrasi baru
+docker compose exec app php artisan migrate --force   # if there are new migrations
 ```
 
 ---
 
-## Perintah Docker Berguna
+## Useful Docker Commands
 
 ```bash
-# Status container
+# Container status
 docker compose ps
 
-# Log
+# Logs
 docker compose logs app
 docker compose logs nginx
 
-# Masuk ke container
+# Enter container shell
 docker compose exec app bash
 
-# Jalankan artisan command
+# Run artisan commands
 docker compose exec app php artisan <command>
 
-# Restart semua service
+# Restart all services
 docker compose restart
 
-# Hentikan
+# Stop
 docker compose down
 
-# Hentikan dan hapus semua data (HATI-HATI)
+# Stop and delete all data (CAUTION)
 docker compose down -v
 ```
 
 ---
 
-## Struktur Volume
+## Volume Structure
 
-| Volume        | Path di container                        | Isi                          |
-|---------------|------------------------------------------|------------------------------|
-| `mysql_data`  | `/var/lib/mysql`                         | Data database MySQL          |
-| `storage_data`| `/var/www/html/storage/app/public`       | Foto barang yang diupload    |
-| `app_public`  | `/var/www/html/public`                   | Asset frontend (shared nginx)|
+| Volume        | Path in container                        | Contents                        |
+|---------------|------------------------------------------|---------------------------------|
+| `mysql_data`  | `/var/lib/mysql`                         | MySQL database data             |
+| `storage_data`| `/var/www/html/storage/app/public`       | Uploaded item photos            |
+| `app_public`  | `/var/www/html/public`                   | Frontend assets (shared w/ nginx)|
 
 ---
 
-## Development Lokal
+## Local Development
 
 ```bash
 composer install
 npm install
 
 cp .env.example .env
-# Edit .env: APP_ENV=local, APP_DEBUG=true, DB_HOST=127.0.0.1, DB_PASSWORD=<lokal>
+# Edit .env: APP_ENV=local, APP_DEBUG=true, DB_HOST=127.0.0.1, DB_PASSWORD=<local>
 
 php artisan key:generate
 php artisan migrate --seed
