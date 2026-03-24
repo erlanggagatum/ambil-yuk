@@ -1,0 +1,34 @@
+# Version control
+.git
+.gitignore
+.gitattributes
+
+# Environment — never bake secrets into the image
+.env
+.env.*
+!.env.example
+
+# Dependencies (reinstalled in image)
+node_modules
+vendor
+
+# Tests
+tests
+phpunit.xml
+
+# Dev tools
+.editorconfig
+.phpunit.cache
+
+# Docker files (not needed inside container)
+docker-compose.yml
+Dockerfile
+.dockerignore
+nginx
+
+# Local storage symlink (recreated inside container via storage:link)
+public/storage
+
+# OS
+.DS_Store
+Thumbs.db
